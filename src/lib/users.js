@@ -1,7 +1,6 @@
 import bcrypt from 'bcrypt';
 import { query } from './db.js';
 
-
 export async function comparePasswords(password, hash) {
   try {
     return await bcrypt.compare(password, hash);

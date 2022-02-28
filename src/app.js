@@ -14,12 +14,10 @@ app.get('/', (req, res) => {
   res.json(data);
 });
 
-const {
-  PORT = 3000
-} = process.env;
+const { PORT = 3000 } = process.env;
 
 // Sér um að req.body innihaldi gögn úr formi
-app.use(express.json()); 
+app.use(express.json());
 
 /*
 app.use(
