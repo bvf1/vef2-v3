@@ -19,7 +19,7 @@ const {
 } = process.env;
 
 // Sér um að req.body innihaldi gögn úr formi
-app.use(express.json()); */
+app.use(express.json()); 
 
 /*
 app.use(
