@@ -6,7 +6,13 @@ import { eventRouter } from './routes/event-routes.js';
 
 const app = express();
 
-
+const data = [
+  { id: 1, title: 'Foo', name: 'Jón' },
+  { id: 2, title: 'Bar', name: 'Anna' },
+];
+app.get('/', (req, res) => {
+  res.json(data);
+});
 /*
 const {
   PORT = 3000
