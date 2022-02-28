@@ -9,15 +9,18 @@ CREATE TABLE public.events (
 
 CREATE TABLE public.registrations (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(64) NOT NULL,
+  user INTEGER NOT NULL,
   comment TEXT,
   event INTEGER NOT NULL,
   created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT event FOREIGN KEY (event) REFERENCES events (id)
+  CONSTRAINT user FOREIGN KEY (user) REFERENCES users (id)
+
 );
 
 CREATE TABLE public.users (
   id serial primary key,
+  name character varying(64) NOT NULL,
   username character varying(64) NOT NULL,
   password character varying(256) NOT NULL
 );
