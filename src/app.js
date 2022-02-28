@@ -13,7 +13,7 @@ const data = [
 app.get('/', (req, res) => {
   res.json(data);
 });
-/*
+
 const {
   PORT = 3000
 } = process.env;
@@ -59,6 +59,6 @@ app.use((err, req, res, next) => {
   return res.status(500).json({ error: 'Internal server error' });
 });
 
-app.listen(3000, () => {
+app.listen(PORT, () => {
   console.info('Server running at http://localhost:3000/');
 });
