@@ -9,7 +9,7 @@
     "start": "dotenv -e .env node ./src/app.js",
     "setup": "dotenv -e .env node ./src/setup.js",
     "test": "NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules' dotenv -e .env.test -- jest ./*.test.js",
-    "test-watch": "NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules' dotenv -e .env.test -- jest ./*.test.js",
+    "test-watch": "NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules' dotenv -e .env.test -- jest --watch ./*.test.js",
     "coverage": "NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules' dotenv -e .env.test -- jest --coverage --collectCoverageFrom=\"./src/**/*.js\"",
     "prettier": "prettier --write .",
     "lint": "concurrently npm:lint:*",

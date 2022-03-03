@@ -1,63 +1,39 @@
 import passport from 'passport';
-import { Strategy } from 'passport-local';
+import dotenv from 'dotenv';
 import { comparePasswords, findById, findByUsername } from './users.js';
 
-/**
- * Athugar hvort username og password sé til í notandakerfi.
- * Callback tekur við villu sem fyrsta argument, annað argument er
- * - `false` ef notandi ekki til eða lykilorð vitlaust
- * - Notandahlutur ef rétt
- *
- * @param {string} username Notandanafn til að athuga
- * @param {string} password Lykilorð til að athuga
- * @param {function} done Fall sem kallað er í með niðurstöðu
- */
-async function strat(username, password, done) {
-  try {
-    const user = await findByUsername(username);
+dotenv.config();
 
-    if (!user) {
-      return done(null, false);
-    }
+export async function strat(data, next) {
+  // fáum id gegnum data sem geymt er í token
+  const user = await findById(data.id);
 
-    // Verður annað hvort notanda hlutur ef lykilorð rétt, eða false
-    const result = await comparePasswords(password, user.password);
-    return done(null, result ? user : false);
-  } catch (err) {
-    console.error(err);
-    return done(err);
+  if (user) {
+    next(null, user);
+  } else {
+    next(null, false);
   }
 }
 
-// Notum local strategy með „strattinu“ okkar til að leita að notanda
-passport.use(new Strategy(strat));
+export function requireAuthentication(req, res, next) {
+  return passport.authenticate('jwt', { session: false }, (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
 
-// getum stillt með því að senda options hlut með
-// passport.use(new Strategy({ usernameField: 'email' }, strat));
+    if (!user) {
+      const error =
+        info.name === 'TokenExpiredError' ? 'expired token' : 'invalid token';
 
-// Geymum id á notanda í session, það er nóg til að vita hvaða notandi þetta er
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
+      return res.redirect('/login');
 
-// Sækir notanda út frá id
-passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await findById(id);
-    done(null, user);
-  } catch (err) {
-    done(err);
-  }
-});
+      //return res.status(401).json({ error });
+    }
 
-// Hjálpar middleware sem athugar hvort notandi sé innskráður og hleypir okkur
-// þá áfram, annars sendir á /login
-export function ensureLoggedIn(req, res, next) {
-  if (req.isAuthenticated()) {
+    // Látum notanda vera aðgengilegan í rest af middlewares
+    req.user = user;
     return next();
-  }
-
-  return res.redirect('/admin/login');
+  })(req, res, next);
 }
 
 export default passport;

@@ -16,7 +16,6 @@ export async function findByUsername(username) {
 
   try {
     const result = await query(q, [username]);
-
     if (result.rowCount === 1) {
       return result.rows[0];
     }
@@ -24,8 +23,8 @@ export async function findByUsername(username) {
     console.error('Gat ekki fundið notanda eftir notendnafni');
     return null;
   }
+  return null;
 
-  return false;
 }
 
 export async function findById(id) {
@@ -44,22 +43,22 @@ export async function findById(id) {
   return null;
 }
 
-export async function createUser(username, password) {
+export async function createUser(name, username, password, admin = 'FALSE') {
   // Geymum hashað password!
   const hashedPassword = await bcrypt.hash(password, 11);
 
   const q = `
     INSERT INTO
-      users (username, password)
-    VALUES ($1, $2)
+      users (name, username, password, admin)
+    VALUES ($1, $2, $3, $4)
     RETURNING *
   `;
 
   try {
-    const result = await query(q, [username, hashedPassword]);
+    const result = await query(q, [name, username, hashedPassword, admin]);
     return result.rows[0];
   } catch (e) {
-    console.error('Gat ekki búið til notanda');
+    console.error(e, 'Gat ekki búið til notanda');
   }
 
   return null;

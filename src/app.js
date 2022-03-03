@@ -1,40 +1,64 @@
 import express from 'express';
-import passport from './lib/login.js';
+import { Strategy, ExtractJwt } from 'passport-jwt';
+import jwt from 'jsonwebtoken';
+
 import { isInvalid } from './lib/template-helpers.js';
+
 import { userRouter } from './routes/user-routes.js';
 import { eventRouter } from './routes/event-routes.js';
+import passport, { strat } from './lib/login.js';
+import { comparePasswords, findByUsername } from './lib/users.js';
+
+const {
+  PORT: port = 3000,
+  JWT_SECRET: jwtSecret,
+  TOKEN_LIFETIME: tokenLifetime = 200,
+  DATABASE_URL: databaseUrl,
+} = process.env;
 
 const app = express();
-
-const data = [
-  { id: 1, title: 'Foo', name: 'Jón' },
-  { id: 2, title: 'Bar', name: 'Anna' },
-];
-app.get('/', (req, res) => {
-  res.json(data);
-});
-
-const { PORT = 3000 } = process.env;
 
 // Sér um að req.body innihaldi gögn úr formi
 app.use(express.json());
 
-/*
-app.use(
-  session({
-    secret: sessionSecret,
-    resave: false,
-    saveUninitialized: false,
-    maxAge: 20 * 1000, // 20 sek
-  })
-);
-*/
-// app.use(passport.initialize());
-// app.use(passport.session());
+if (!jwtSecret || !databaseUrl) {
+  console.error('Vantar .env gildi');
+  process.exit(1);
+}
+
+export const jwtOptions = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: jwtSecret,
+};
+
+passport.use(new Strategy(jwtOptions, strat));
+
+app.use(passport.initialize());
 
 app.locals = {
   isInvalid,
 };
+
+userRouter.post('/login', async (req, res) => {
+  const { username, password = '' } = req.body;
+
+  const user = await findByUsername(username);
+
+  if (!user) {
+    return res.status(401).json({ error: 'No such user' });
+  }
+
+  const passwordIsCorrect = await comparePasswords(password, user.password);
+
+  if (passwordIsCorrect) {
+    const payload = { id: user.id };
+    const tokenOptions = { expiresIn: tokenLifetime };
+    const token = jwt.sign(payload, jwtOptions.secretOrKey, tokenOptions);
+    return res.json({ token });
+  }
+
+  return res.status(401).json({ error: 'Invalid password' });
+});
 
 app.use('/users', userRouter);
 app.use('/events', eventRouter);
@@ -57,6 +81,6 @@ app.use((err, req, res, next) => {
   return res.status(500).json({ error: 'Internal server error' });
 });
 
-app.listen(PORT, () => {
-  console.info('Server running at http://localhost:3000/');
+app.listen(port, () => {
+  console.info(`Server running at http://localhost:${port}/`);
 });

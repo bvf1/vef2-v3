@@ -34,6 +34,7 @@ export async function query(q, values = []) {
 
   try {
     const result = await client.query(q, values);
+
     return result;
   } catch (e) {
     if (nodeEnv !== 'test') {
@@ -186,6 +187,20 @@ export async function listRegistered(event) {
     return result.rows;
   }
 
+  return null;
+}
+
+export async function listUsers() {
+  const q = `
+    SELECT *
+    FROM users
+  `;
+
+  const result = await query(q);
+
+  if (result) {
+    return result.rows;
+  }
   return null;
 }
 

@@ -144,3 +144,5 @@ Skil skulu innihalda:
 | 0.1    | Fyrsta útgáfa                                                              |
 | 0.2    | Fjarlægja `stylelint`, laga lýsingu á testum, fjarlægja netfang úr lýsingu |
 | 0.3    | Bæta við `admin` í notendatöflu                                            |
+
+user INTEGER NOT NULL,
