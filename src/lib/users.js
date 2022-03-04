@@ -24,7 +24,6 @@ export async function findByUsername(username) {
     return null;
   }
   return null;
-
 }
 
 export async function findById(id) {

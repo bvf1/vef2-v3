@@ -25,9 +25,7 @@ export function requireAuthentication(req, res, next) {
       const error =
         info.name === 'TokenExpiredError' ? 'expired token' : 'invalid token';
 
-      return res.redirect('/login');
-
-      //return res.status(401).json({ error });
+      return res.status(401).json({ error });
     }
 
     // Látum notanda vera aðgengilegan í rest af middlewares

@@ -6,13 +6,14 @@ import { isInvalid } from './lib/template-helpers.js';
 
 import { userRouter } from './routes/user-routes.js';
 import { eventRouter } from './routes/event-routes.js';
-import passport, { strat } from './lib/login.js';
+import passport from './lib/login.js';
+import { strat } from './lib/login.js';
 import { comparePasswords, findByUsername } from './lib/users.js';
 
 const {
   PORT: port = 3000,
   JWT_SECRET: jwtSecret,
-  TOKEN_LIFETIME: tokenLifetime = 200,
+  TOKEN_LIFETIME: tokenLifetime = 20000,
   DATABASE_URL: databaseUrl,
 } = process.env;
 
@@ -39,6 +40,9 @@ app.locals = {
   isInvalid,
 };
 
+app.use('/users', userRouter);
+app.use('/events', eventRouter);
+
 userRouter.post('/login', async (req, res) => {
   const { username, password = '' } = req.body;
 
@@ -59,9 +63,6 @@ userRouter.post('/login', async (req, res) => {
 
   return res.status(401).json({ error: 'Invalid password' });
 });
-
-app.use('/users', userRouter);
-app.use('/events', eventRouter);
 
 /** Middleware sem sér um 404 villur. */
 app.use((req, res) => {
