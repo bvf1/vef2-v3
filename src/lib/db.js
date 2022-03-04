@@ -239,8 +239,18 @@ export async function listRegistered(event) {
   return null;
 }
 
+export async function deleteRegistrations(event, user = '') {
+  if (user === '') {
+    const q = `
+    DELETE FROM registrations
+    WHERE
+      event = $1
+  `;
 
-export async function deleteRegistrations(event, user) {
+    await query(q, [event]);
+    return null;
+  }
+
   const q = `
     DELETE FROM registrations
     WHERE
@@ -253,7 +263,7 @@ export async function deleteRegistrations(event, user) {
 
 export async function listUsers() {
   const q = `
-    SELECT *
+    SELECT id, name, username, admin
     FROM users
   `;
 

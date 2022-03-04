@@ -91,7 +91,6 @@ async function patchEvent(req, res) {
 
   const id = req.params.slug;
 
-
   let slug = slugify(name);
 
   let data = await listEventById(id);
@@ -121,18 +120,17 @@ async function patchValidationCheck(req, res, next) {
 
   if (!(event.id === req.user.id || req.user.admin === true)) {
     return res.send(
-      `Þú þarft að vera skráður fyrir viðburðinum eða vera stjórnandi`
+      'Þú þarft að vera skráður fyrir viðburðinum eða vera stjórnandi'
     );
   }
 
   const validation = validationResult(req);
   const customValidations = [];
 
-
   // er skráður
   const nameExists = await listEventByName(req.body.name);
 
-  if (nameExists !== null && nameExists.id.toString() !==slug) {
+  if (nameExists !== null && nameExists.id.toString() !== slug) {
     customValidations.push({
       param: 'name',
       msg: 'Nafn er þegar til',
@@ -141,7 +139,11 @@ async function patchValidationCheck(req, res, next) {
 
   // check if slug
   const slugExists = await listEvent(slugify(req.body.name));
-  if (slugExists && slugExists.id.toString() !== slug && customValidations.length === 0) {
+  if (
+    slugExists &&
+    slugExists.id.toString() !== slug &&
+    customValidations.length === 0
+  ) {
     customValidations.push({
       param: 'name',
       msg: 'linkur er frátekinn, þarf að breyta nafni á viðburði',
@@ -163,7 +165,7 @@ async function deleteEventRoute(req, res) {
 
   if (!(event.id === req.user.id || req.user.admin === true)) {
     return res.send(
-      `User ${req.user.id} Þú þarft að vera skráður fyrir viðburðinum eða vera stjórnandi`
+      'Þú þarft að vera skráður fyrir viðburðinum eða vera stjórnandi'
     );
   }
 
@@ -183,9 +185,9 @@ async function registerForEventRoute(req, res) {
   const { comment = '' } = req.body;
   let data = await registrationsByEventANDUser(event, user);
   if (data.length > 0) {
-    return res.send("Þú ert þegar skráður á viðburðin");
+    return res.send('Þú ert þegar skráður á viðburðin');
   }
-  await register({user, comment, event});
+  await register({ user, comment, event });
 
   data = await registrationsByEventANDUser(event, user);
 
@@ -210,9 +212,10 @@ async function deleteRegistrationRoute(req, res) {
   if (data.length === 0) return res.status(400).send('Skráning var ekki til');
 
   await deleteRegistrations(event, user);
-  const isRegistered = await registrationsByEventANDUser(event, user)
-  if (isRegistered.length === 0) return res.json('Þú ert ekki lengur skráður á viðburðinn');
-  return res.send("Tókst ekki að afskrá");
+  const isRegistered = await registrationsByEventANDUser(event, user);
+  if (isRegistered.length === 0)
+    return res.json('Þú ert ekki lengur skráður á viðburðinn');
+  return res.send('Tókst ekki að afskrá');
 }
 
 eventRouter.get('/', catchErrors(eventsRoute));
@@ -237,7 +240,11 @@ eventRouter.patch(
   catchErrors(patchEvent)
 );
 
-eventRouter.delete('/:slug', requireAuthentication, catchErrors(deleteEventRoute));
+eventRouter.delete(
+  '/:slug',
+  requireAuthentication,
+  catchErrors(deleteEventRoute)
+);
 
 eventRouter.post(
   '/:slug/register',
@@ -249,5 +256,9 @@ eventRouter.post(
   catchErrors(registerForEventRoute)
 );
 
-eventRouter.delete('/:slug/register', requireAuthentication, catchErrors(deleteRegistrationRoute));
+eventRouter.delete(
+  '/:slug/register',
+  requireAuthentication,
+  catchErrors(deleteRegistrationRoute)
+);
 // todo add requireAuthentication

@@ -36,10 +36,6 @@ passport.use(new Strategy(jwtOptions, strat));
 
 app.use(passport.initialize());
 
-app.locals = {
-  isInvalid,
-};
-
 app.use('/users', userRouter);
 app.use('/events', eventRouter);
 

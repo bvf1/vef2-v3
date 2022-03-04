@@ -49,7 +49,6 @@ describe('user-routes', () => {
       body,
     });
 
-    const data = await response.json();
     const token = await response.token;
 
     expect(response.status).toBe(200);

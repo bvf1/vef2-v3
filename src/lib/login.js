@@ -1,6 +1,6 @@
 import passport from 'passport';
 import dotenv from 'dotenv';
-import { comparePasswords, findById, findByUsername } from './users.js';
+import { findById } from './users.js';
 
 dotenv.config();
 
