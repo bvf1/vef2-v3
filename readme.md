@@ -1,7 +1,9 @@
 # Vefforritun 2, 2022. Verkefni 3: Viðburðakerfis vefþjónustur
 
 Til er Stjórnenda aðgangur
+
 notendanafn admin
+
 lykilorð 123
 
 ### Notendaumsjón, vefþjónustur
