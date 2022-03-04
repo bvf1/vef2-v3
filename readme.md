@@ -1,5 +1,9 @@
 # Vefforritun 2, 2022. Verkefni 3: Viðburðakerfis vefþjónustur
 
+heroku
+guarded-savannah-03819/events/login
+
+
 Til er Stjórnenda aðgangur
 
 notendanafn admin
