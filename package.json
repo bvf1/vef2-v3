@@ -13,8 +13,7 @@
     "coverage": "NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules' dotenv -e .env.test -- jest --coverage --collectCoverageFrom=\"./src/**/*.js\"",
     "prettier": "prettier --write .",
     "lint": "concurrently npm:lint:*",
-    "lint:eslint": "eslint ./src/**/*.js",
-    "lint:stylelint": "stylelint ./public/styles.css"
+    "lint:eslint": "eslint ./src/**/*.js"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +27,7 @@
     "express-session": "^1.17.2",
     "express-validator": "^6.14.0",
     "passport": "^0.5.2",
+    "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "pg": "^8.7.1",
     "xss": "^1.0.10"

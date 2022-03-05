@@ -1,14 +1,13 @@
 import express from 'express';
+import dotenv from 'dotenv';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import jwt from 'jsonwebtoken';
-
-import { isInvalid } from './lib/template-helpers.js';
-
 import { userRouter } from './routes/user-routes.js';
 import { eventRouter } from './routes/event-routes.js';
-import passport from './lib/login.js';
-import { strat } from './lib/login.js';
 import { comparePasswords, findByUsername } from './lib/users.js';
+import passport, { strat } from './lib/login.js';
+
+dotenv.config();
 
 const {
   PORT: port = 3000,
